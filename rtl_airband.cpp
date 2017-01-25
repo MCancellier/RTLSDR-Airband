@@ -18,11 +18,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined USE_BCM_VC && !defined __arm__
+#if defined USE_BCM_VC && !defined __arm__ && !defined __aarch64__
 #error Broadcom VideoCore support can only be enabled on ARM builds
 #endif
 
-// From this point we may safely assume that USE_BCM_VC implies __arm__
+// From this point we may safely assume that USE_BCM_VC implies __arm__ || __aarch64__
 
 #if defined (__arm__) || defined (__aarch64__)
 

@@ -34,6 +34,13 @@ else ifeq ($(PLATFORM), rpiv2)
   LDLIBS += -lbcm_host -ldl
   export LDFLAGS = -L/opt/vc/lib
   DEPS = $(OBJ) $(FFT) rtl_airband_neon.o
+else ifeq ($(PLATFORM), rpiv3)
+  CFLAGS += -DUSE_BCM_VC
+  CFLAGS += -I/opt/vc/include  -I/opt/vc/include/interface/vcos/pthreads -I/opt/vc/include/interface/vmcs_host/linux
+  CFLAGS += -march=armv8-a+crc -mtune=cortex-a53 -ffast-math
+  LDLIBS += -lbcm_host -ldl
+  export LDFLAGS = -L/opt/vc/lib
+  DEPS = $(OBJ) $(FFT) rtl_airband_neon.o
 else ifeq ($(PLATFORM), armv7-generic)
   CFLAGS += -march=armv7-a -mfpu=neon-vfpv4 -mfloat-abi=hard -ffast-math 
   LDLIBS += -lfftw3f
@@ -56,10 +63,11 @@ endif
 $(BIN): $(DEPS)
 ifndef DEPS
 	@printf "\nPlease set PLATFORM variable to one of available platforms:\n \
-	\tPLATFORM=rpiv1 make\t\tRaspberry Pi V1 (VFP FPU, use BCM VideoCore for FFT)\n \
-	\tPLATFORM=rpiv2 make\t\tRaspberry Pi V2 (NEON FPU, use BCM VideoCore for FFT)\n \
-	\tPLATFORM=armv7-generic make\tOther ARMv7 platforms, like Cubieboard (NEON FPU, use main CPU for FFT)\n \
-	\tPLATFORM=armv8-generic make\t64-bit ARM platforms, like Odroid C2 (use main CPU for FFT)\n \
+	\tPLATFORM=rpiv1 make\t\tRaspberry Pi V1 (ARMv6, VFP FPU, use BCM VideoCore for FFT)\n \
+	\tPLATFORM=rpiv2 make\t\tRaspberry Pi V2 (ARMv7, NEON FPU, use BCM VideoCore for FFT)\n \
+	\tPLATFORM=rpiv3 make\t\tRaspberry Pi V3 (ARMv8, NEON FPU, use BCM VideoCore for FFT)\n \
+	\tPLATFORM=armv7-generic make\tARMv7 platforms without BCM VideoCore, like Cubieboard (NEON FPU, use main CPU for FFT)\n \
+	\tPLATFORM=armv8-generic make\tARMv8 platforms without BCM VideoCore, like Odroid C2 (use main CPU for FFT)\n \
 	\tPLATFORM=x86 make\t\tbuild binary for x86\n\n \
 	Additional options:\n \
 	\tNFM=1\t\t\t\tInclude support for Narrow FM demodulation\n \
